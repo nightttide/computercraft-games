@@ -6,12 +6,13 @@ charClass.__index = charClass
 function charClass:create(mychar,x,y)
    local obj = {}             -- our new object
    setmetatable(obj,charClass)  -- make charClass function lookup table/ put your name (obj,className)
-   obj.x = x      -- initialize our object / use my variables
+   obj.char = mychar      -- initialize our object / use my variables
+   obj.x = x
    obj.y = y
-   obj.char = char
    return obj
 end
-function charObj:draw()
+
+function charClass:draw()
 if((self.x > width or self.x < 1) or (self.y > height or self.y < 1)) then return 0 --char is off screen
 else
  term.setCursorPos(self.x,self.y)
@@ -22,11 +23,25 @@ end
 --character class definition
 
 --Example usage of character class
-playerObj = charObj:create('R',width/2,height/2) -- (character, xPos, yPos)
-sinObjs = {}
+playerObj = charClass:create('R',width/2,height/2) -- create object and return it(character, xPos, yPos)
+function playerObj.move(direction) -- adding a new function to this object
+ if     direction == "up" then playerObj.y = playerObj.y - 1
+ elseif direction == "down" then playerObj.y = playerObj.y + 1
+ elseif direction == "left" then playerObj.x = playerObj.x - 1
+ elseif direction == "right" then playerObj.x = playerObj.x + 1 
+end end
+--Example usage of character class
+
+--this function is called when key event is active
+function keyPress(keyid)
+ if     keyid == keys.w then playerObj.move("up")
+ elseif keyid == keys.s then playerObj.move("down")
+ elseif keyid == keys.a then playerObj.move("left")
+ elseif keyid == keys.d then playerObj.move("right")
+end end
 
 --put all character objects in here
-function draw()
+function drawAll()
  term.setBackgroundColor(colors.white)
  term.clear()
  playerObj:draw()
@@ -45,9 +60,12 @@ while 1 do
   os.cancelTimer(fUpdate)
   fUpdate=os.startTimer(0.1)
   --Update the screen 
-  draw()
+  drawAll()
   end
   
---key press event
+--key press event sends key pressed to the keypress event handler / use my function
+  if event == "key" then
+   keyPress(id)
+  end
 --Other events 
 end
