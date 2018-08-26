@@ -1,0 +1,53 @@
+local width,height=term.getSize()
+
+--character class definition 
+charClass = {}
+charClass.__index = charClass
+function charClass:create(mychar,x,y)
+   local obj = {}             -- our new object
+   setmetatable(obj,charClass)  -- make charClass function lookup table/ put your name (obj,className)
+   obj.x = x      -- initialize our object / use my variables
+   obj.y = y
+   obj.char = char
+   return obj
+end
+function charObj:draw()
+if((self.x > width or self.x < 1) or (self.y > height or self.y < 1)) then return 0 --char is off screen
+else
+ term.setCursorPos(self.x,self.y)
+ term.blit(self.char,'f','0') -- term.blit(char,color,bgColor)
+ return 1 --char is on screen
+end
+end
+--character class definition
+
+--Example usage of character class
+playerObj = charObj:create('R',width/2,height/2) -- (character, xPos, yPos)
+sinObjs = {}
+
+--put all character objects in here
+function draw()
+ term.setBackgroundColor(colors.white)
+ term.clear()
+ playerObj:draw()
+end
+
+--Start frame update timer;event due in 100ms
+fUpdate=os.startTimer(0.1) 
+
+while 1 do
+--What is the current event?
+ event,id=os.pullEvent() 
+ 
+--Frame update event
+  if event=="timer" and id==fUpdate then
+  --Restart the frame update timer
+  os.cancelTimer(fUpdate)
+  fUpdate=os.startTimer(0.1)
+  --Update the screen 
+  draw()
+  end
+  
+--key press event
+--Other events 
+end
